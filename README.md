@@ -36,7 +36,8 @@ docker build -t postgres:16-alpine-custom -f alpine/Dockerfile .
 Step 4. Start a PostgreSQL container from the custom Alpine image:</br>
 #For windows CMD:</br>
 ```
-source tpcc.tcl
+docker run --rm --name pg-alpine -e POSTGRES_USER=hammerdb -e POSTGRES_PASSWORD=hammerpw -e POSTGRES_DB=tpcc -p 5433:5432 -d postgres:16-alpine-custom
+
 ```
 #For For Git Bash / Linux / macOS:
 ```
