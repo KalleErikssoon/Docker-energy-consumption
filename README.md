@@ -25,4 +25,38 @@ Step 8. Run the following command in the HammerDB CLI:</br>
 ```
 source tpcc.tcl
 ```
-## Running Benchmarks Alpine
+## Running TPC-C benchmark for Alpine
+Step 1. Open Docker Desktop on your machine.</br> 
+Step 2. Open a terminal in the root of this repository</br> 
+Step 3. Enter the following command in your terminal to build the Alpine-based image:</br> 
+```
+docker build -t postgres:16-alpine-custom -f alpine/Dockerfile .
+
+```
+Step 4. Start a PostgreSQL container from the custom Alpine image:</br>
+#For windows CMD:</br>
+```
+source tpcc.tcl
+```
+#For For Git Bash / Linux / macOS:
+```
+docker run --rm --name pg-alpine \
+  -e POSTGRES_USER=hammerdb \
+  -e POSTGRES_PASSWORD=hammerpw \
+  -e POSTGRES_DB=tpcc \
+  -p 5433:5432 \
+  -d postgres:16-alpine-custom
+```
+Step 5. Copy the run_tpcc.tcl file from hammerdb/ in this repo into the HammerDB installation directory</br>
+(For example: C:\Program Files\HammerDB-4.12 on Windows)</br>
+Step 6. Open a terminal and start the HammerDB CLI:</br>
+```
+cd "C:\Program Files\HammerDB-4.12"
+hammerdbcli.bat
+```
+Step 7. From inside HammerDB CLI, run the following command:</br>
+```
+source run_tpcc.tcl
+
+```
+Step 8. Wait for the schema to be built and the benchmark to run. HammerDB will report the NOPM and TPM scores at the end.
