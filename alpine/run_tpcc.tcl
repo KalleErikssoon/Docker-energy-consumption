@@ -15,6 +15,8 @@ diset tpcc pg_num_vu 5
 
 buildschema
 
+vudestroy
+
 vucreate
 vuset vu 1
 vurun
