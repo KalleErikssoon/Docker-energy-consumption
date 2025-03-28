@@ -1,6 +1,7 @@
 puts "TPC-C Benchmark on PostgreSQL in Docker Container"
 
 dbset db pg
+dbset bm TPC-C
 
 diset connection pg_host localhost
 diset connection pg_port 5433
@@ -21,4 +22,3 @@ vurun
 waittocomplete
 
 puts "TPC-C Benchmark complete"
-exit
