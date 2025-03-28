@@ -25,6 +25,8 @@ Step 8. Run the following command in the HammerDB CLI:</br>
 ```
 source tpcc.tcl
 ```
+
+---
 ## Running TPC-C benchmark for Alpine
 Step 1. Open Docker Desktop on your machine.</br> 
 Step 2. Open a terminal in the root of this repository</br> 
@@ -61,3 +63,34 @@ source run_tpcc.tcl
 
 ```
 Step 8. Wait for the schema to be built and the benchmark to run. HammerDB will report the NOPM and TPM scores at the end.
+
+---
+## How to run Kepler with Grafana and Prometheus to monitor energy consumption
+### Prerequisites:
+* Follow [this](https://sustainable-computing.io/installation/kepler/) installation guide (kubernetes, kepler, etc.)
+
+Step 1. Deploy Kepler
+```
+cd ./kube-prometheus/kepler
+make build-manifest OPTS="PROMETHEUS_DEPLOY"
+kubectl apply -f _output/generated-manifest/deployment.yaml
+```
+
+Step 2. Forward Ports
+```
+kubectl port-forward --address localhost -n kepler service/kepler-exporter 9102:9102 &
+kubectl port-forward --address localhost -n monitoring service/prometheus-k8s 9090:9090 &
+kubectl port-forward --address localhost -n monitoring service/grafana 3000:3000 &
+```
+
+Step 3. Load kubernetes deployment into kind (make sure correct kind cluster)
+```
+kind load docker-image <image-name>
+kubectl delete deployment <name>
+kubectl apply <kubernetes deployment yaml> 
+kubectl port-forward deployment/<name> 5433:5432
+```
+
+Step 4. Access Grafana at http://localhost:3000/
+
+Step 5. Run Benchmarks with HammerDB (follow steps above in regards how to run HammerDB benchmarks)
