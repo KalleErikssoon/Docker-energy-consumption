@@ -1,10 +1,8 @@
-### Alpine TPC-C Dockerfile (alpine-tpcc/Dockerfile)
+### Alpine TPC-H Dockerfile (alpine-tpch/Dockerfile)
 FROM alpine:latest
 
 ENV PGDATA=/var/lib/postgresql/data
-ENV POSTGRES_USER=hammerdb
-ENV POSTGRES_PASSWORD=hammerpw
-ENV POSTGRES_DB=tpcc
+ENV POSTGRES_PASSWORD=postgres
 
 RUN apk update && \
     apk add --no-cache postgresql postgresql-contrib su-exec
@@ -16,8 +14,9 @@ USER postgres
 
 RUN /usr/bin/initdb -D "$PGDATA" && \
     /usr/bin/pg_ctl -D "$PGDATA" -o "-c listen_addresses='localhost'" -w start && \
-    psql --username=postgres --command "CREATE USER hammerdb WITH PASSWORD 'hammerpw';" && \
-    psql --username=postgres --command "CREATE DATABASE tpcc OWNER hammerdb;" && \
+    psql --username=postgres --command "ALTER USER postgres WITH PASSWORD 'postgres';" && \
+    psql --username=postgres --command "CREATE USER tpch WITH PASSWORD 'tpch';" && \
+    psql --username=postgres --command "CREATE DATABASE tpch OWNER tpch;" && \
     /usr/bin/pg_ctl -D "$PGDATA" -m fast -w stop
 
 RUN echo "listen_addresses='*'" >> "$PGDATA/postgresql.conf" && \
