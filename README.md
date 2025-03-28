@@ -85,12 +85,23 @@ kubectl port-forward --address localhost -n monitoring service/grafana 3000:3000
 
 Step 3. Load kubernetes deployment into kind (make sure correct kind cluster)
 ```
-kind load docker-image <image-name>
-kubectl delete deployment <name>
-kubectl apply <kubernetes deployment yaml> 
-kubectl port-forward deployment/<name> 5433:5432
+kind load docker-image <IMAGE_NAME>
+kubectl delete deployment <NAME>
+kubectl apply <K8S DEPLOYMENT YAML> 
+kubectl port-forward deployment/<NAME> 5433:5432
 ```
 
 Step 4. Access Grafana at http://localhost:3000/
 
 Step 5. Run Benchmarks with HammerDB (follow steps above in regards how to run HammerDB benchmarks)
+
+Step 6. Query data in Grafana
+* Energy consumption in 1 minute intervals
+  ```
+  increase(kepler_container_joules_total{pod_name="<POD_NAME"}[1m])
+  ```
+* Total energy consumption since container was started
+  ```
+  kepler_container_joules_total{pod_name="<POD_NAME>"}
+  ```
+* Export as CSV: Query Inspector -> Data -> Download as CSV
