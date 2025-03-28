@@ -15,15 +15,24 @@ RUN apk update && \
 RUN mkdir -p "$PGDATA" /run/postgresql && \
     chown -R postgres:postgres /var/lib/postgresql /run/postgresql
 
-# Switch to the postgres user
+# 🔻 Now switch to the postgres user
 USER postgres
 
-# Initialize database and create user/database
-RUN /usr/bin/initdb -D "$PGDATA" && \
+# Initialize database and create users and databases
+RUN mkdir -p /run/postgresql && \
+    chown -R postgres:postgres /run/postgresql && \
+    /usr/bin/initdb -D "$PGDATA" && \
     /usr/bin/pg_ctl -D "$PGDATA" -o "-c listen_addresses='localhost'" -w start && \
-    psql --username=postgres --command "CREATE USER ${POSTGRES_USER} WITH PASSWORD '${POSTGRES_PASSWORD}';" && \
-    psql --username=postgres --command "CREATE DATABASE ${POSTGRES_DB} OWNER ${POSTGRES_USER};" && \
+    # Set password for postgres user (used in TPC-H)
+    psql --username=postgres --command "ALTER USER postgres WITH PASSWORD 'postgres';" && \
+    # Create hammerdb user and tpcc db for TPC-C
+    psql --username=postgres --command "CREATE USER hammerdb WITH PASSWORD 'hammerpw';" && \
+    psql --username=postgres --command "CREATE DATABASE tpcc OWNER hammerdb;" && \
+    # Create tpch db for TPC-H
+    psql --username=postgres --command "CREATE DATABASE tpch OWNER postgres;" && \
     /usr/bin/pg_ctl -D "$PGDATA" -m fast -w stop
+
+
 
 # Allow external connections
 RUN echo "listen_addresses='*'" >> "$PGDATA/postgresql.conf" && \
