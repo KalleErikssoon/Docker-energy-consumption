@@ -12,13 +12,13 @@ docker build -t postgres:alpine-tpcc -f alpine/tpcc/Dockerfile .
 ```
 Step 2. Run the container:
 ```
-source run_tpcc_alpine.tcl
+docker run -d --rm --name pg-alpine-tpcc -p 5433:5432 postgres:alpine-tpcc
 
 ```
 
 Step 3. Run the Benchmark in hammerdb:
 ```
-docker run -d --rm --name pg-alpine-tpcc -p 5433:5432 postgres:alpine-tpcc
+source run_tpcc_alpine.tcl
 
 ```
 
